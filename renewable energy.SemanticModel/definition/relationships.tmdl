@@ -1,0 +1,6 @@
+relationship 2aadf05b-16a8-9817-5894-1e502b64e349
+	crossFilteringBehavior: bothDirections
+	securityFilteringBehavior: bothDirections
+	fromColumn: IsDBvsGlobalEnergy.Country
+	toColumn: Table.Country
+

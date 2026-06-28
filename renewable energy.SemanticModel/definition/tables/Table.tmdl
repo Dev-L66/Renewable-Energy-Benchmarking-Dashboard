@@ -1,0 +1,35 @@
+table Table
+	lineageTag: e399f107-b077-4642-8aa7-fedd18d2a3ee
+
+	column Country
+		dataType: string
+		lineageTag: d110bd0d-bf50-493a-a4b0-60a4445f3b67
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column FlagURL
+		dataType: string
+		lineageTag: fb0e0ada-d782-4050-9b4e-df00db54d27b
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: FlagURL
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Table = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\sasas\Downloads\Country_FlagURLs_Cleaned.xlsx"), null, true),
+				    #"Country Flags_Sheet" = Source{[Item="Country Flags",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(#"Country Flags_Sheet",{{"Column1", type text}, {"Column2", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Column1", "Country"}, {"Column2", "FlagURL"}})
+				in
+				    #"Renamed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+
