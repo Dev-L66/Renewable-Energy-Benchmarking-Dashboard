@@ -1,0 +1,737 @@
+table IsDBvsGlobalEnergy
+	lineageTag: 777e55ba-ffd5-4633-b5db-5688b0978803
+
+	measure 'Total Solar Electricity' = SUM(IsDBvsGlobalEnergy[solar_electricity])
+		formatString: 0.00
+		lineageTag: f7fdef80-86b3-4899-95e4-356601b5a876
+
+	measure 'Total Wind Electricity' = SUM(IsDBvsGlobalEnergy[wind_electricity])
+		lineageTag: f622446c-a7f0-43dd-96b2-734d53b3f06a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Hydro Electricity' = SUM(IsDBvsGlobalEnergy[hydro_electricity])
+		lineageTag: 731adf3a-08cd-4bff-b6ef-de0c5f57fa11
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Renewable Share (Non-IsDB Member Countries)' = CALCULATE(AVERAGE(IsDBvsGlobalEnergy[renewables_share_elec])/100, IsDBvsGlobalEnergy[isDB member]="No")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4cbef7cc-4db7-445e-a640-47747640f0f1
+
+	measure 'Average Renewable Share (IsDB Member Countries)' = CALCULATE(AVERAGE(IsDBvsGlobalEnergy[renewables_share_elec])/100, IsDBvsGlobalEnergy[isDB member]="Yes")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 94fcd192-a655-4e4b-9cc6-816aafdc466d
+
+	measure 'Top 10 Countries by RenewableShare of Electricity' = MAX(IsDBvsGlobalEnergy[renewables_share_elec])
+		lineageTag: c8150cfa-4334-4625-ad5b-0a7e06f9c3fe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Renewable Electricity' = [Total Hydro Electricity] + [Total Solar Electricity] + [Total Wind Electricity]
+		lineageTag: 38240914-ed8b-4651-a17d-371734b93aa5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top IsDB Hydro Country & Hydro %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "Yes"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[hydro_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountryHydro =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[hydro_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBHydro =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[hydro_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "Yes"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountryHydro, TotalIsDBHydro)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: b9dec6b5-3dd0-475a-b8c4-165e686cec4d
+
+	measure 'Top IsDB Solar Country & Solar %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "Yes"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[solar_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountrySolar =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[solar_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBSolar =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[solar_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "Yes"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountrySolar, TotalIsDBSolar)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: a14652d5-6c68-4822-9097-75d88441a1c0
+
+	measure 'Top IsDB Wind Country & Wind %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "Yes"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[wind_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountryWind =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[wind_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBWind =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[wind_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "Yes"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountryWind, TotalIsDBWind)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: 2914adc3-0968-4d72-a58f-401209d1a2fe
+
+	measure 'Top Non-IsDB Solar Country & Solar %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "No"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[solar_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountrySolar =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[solar_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBSolar =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[solar_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "No"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountrySolar, TotalIsDBSolar)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: e0c70fc8-8809-4b08-9d3c-a8c35e56f242
+
+	measure 'Top Non-IsDB Wind Country & Wind %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "No"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[wind_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountryWind =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[wind_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBWind =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[wind_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "No"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountryWind, TotalIsDBWind)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: f3d4c8c9-e5f8-4c8d-8ba0-181ab16e64e9
+
+	measure 'Top Non-IsDB Hydro Country & Hydro %' =
+			
+			VAR TopCountry =
+			    TOPN(
+			        1,
+			        FILTER(
+			            VALUES(IsDBvsGlobalEnergy[country]),
+			            CALCULATE(MAX(IsDBvsGlobalEnergy[IsDB Member])) = "No"
+			        ),
+			        CALCULATE(SUM(IsDBvsGlobalEnergy[hydro_electricity])),
+			        DESC
+			    )
+			
+			VAR CountryName =
+			    CONCATENATEX(TopCountry, IsDBvsGlobalEnergy[country])
+			
+			VAR CountryHydro =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[hydro_electricity]),
+			        TopCountry
+			    )
+			
+			VAR TotalIsDBHydro =
+			    CALCULATE(
+			        SUM(IsDBvsGlobalEnergy[hydro_electricity]),
+			        IsDBvsGlobalEnergy[IsDB Member] = "No"
+			    )
+			
+			VAR Pct =
+			    DIVIDE(CountryHydro, TotalIsDBHydro)
+			
+			RETURN
+			    CountryName & " - " & FORMAT(Pct, "0.0%")
+		lineageTag: ecbb22fb-1427-45b8-92cc-c523e2c3f749
+
+	measure 'Rank Solar' =
+			
+			RANKX(
+			FILTER(
+			ALL('IsDBvsGlobalEnergy'),
+			'IsDBvsGlobalEnergy'[isDB Member]=MAX('IsDBvsGlobalEnergy'[isDB Member])
+			),
+			CALCULATE(SUM('IsDBvsGlobalEnergy'[solar_electricity])),
+			,
+			DESC
+			)
+		formatString: 0
+		lineageTag: 47ed70d6-8b47-45ef-b0eb-b79c252a47b5
+
+	measure 'Rank Wind' =
+			
+			RANKX(
+			FILTER(
+			ALL('IsDBvsGlobalEnergy'),
+			'IsDBvsGlobalEnergy'[isDB Member]=MAX('IsDBvsGlobalEnergy'[isDB Member])
+			),
+			CALCULATE(SUM('IsDBvsGlobalEnergy'[wind_electricity])),
+			,
+			DESC
+			)
+		formatString: 0
+		lineageTag: 3296edd0-79e7-4acc-8a53-e45dfe0f3511
+
+	measure 'Total Renewable Electricity ISDB' =
+			
+			CALCULATE(
+			    [Total Hydro Electricity] +
+			    [Total Solar Electricity] +
+			    [Total Wind Electricity],
+			    'IsDBvsGlobalEnergy'[isDB Member] = "Yes"
+			)
+		lineageTag: a12d529b-7e26-4e8a-8a5d-200054e649cd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Renewable Electricity Non-ISDB' =
+			
+			CALCULATE(
+			    [Total Hydro Electricity] +
+			    [Total Solar Electricity] +
+			    [Total Wind Electricity],
+			    'IsDBvsGlobalEnergy'[isDB Member] = "No"
+			)
+		lineageTag: abae3066-675d-4953-8dd4-e2965fd8f9ed
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 5' =
+			
+			IF([Energy Rank] <= 5, 1, 0)
+		formatString: 0
+		lineageTag: 650b11cf-3183-4449-9326-5e72701bddf3
+
+	measure 'Energy Rank' =
+			
+			RANKX(
+			    ALL(IsDBvsGlobalEnergy[Country]),
+			    COALESCE(
+			        [Total Solar Electricity],
+			        [Total Hydro Electricity],
+			        [Total Wind Electricity]
+			    ),
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		lineageTag: 33f26caa-f5c2-4731-b986-a774a2fa3827
+
+	measure 'Selected Energy' =
+			
+			SWITCH(
+			    TRUE(),
+			    ISSELECTEDMEASURE([Total Solar Electricity]), [Total Solar Electricity],
+			    ISSELECTEDMEASURE([Total Hydro Electricity]), [Total Hydro Electricity],
+			    ISSELECTEDMEASURE([Total Wind Electricity]), [Total Wind Electricity]
+			)
+		lineageTag: 3018de19-1a4f-42ef-8a97-d62c06cb9b5f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'ISDB Country Count' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(IsDBvsGlobalEnergy[Country]),
+			    IsDBvsGlobalEnergy[isDB member] = "Yes"
+			)
+		formatString: 0
+		lineageTag: 66b19f6c-1f48-4852-81b1-41e95fcc7e1b
+
+	measure 'Non-ISDB Country Count' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(IsDBvsGlobalEnergy[Country]),
+			    IsDBvsGlobalEnergy[isDB member] = "No"
+			)
+		formatString: 0
+		lineageTag: b296def6-8eec-4c1b-9b74-cd88d6deddad
+
+	measure 'Average Renewable Share %' = (AVERAGE(IsDBvsGlobalEnergy[renewables_share_elec])/100)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1753e0f4-bb20-4484-accd-0b03ffd22542
+
+	column Country
+		dataType: string
+		lineageTag: 2b2385e6-484f-4b76-a1a6-04b938791777
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: a33d4eb9-b1d2-4824-a933-750792a1d8aa
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column iso_code
+		dataType: string
+		lineageTag: c24d4fb3-b5f4-4568-8e08-2ef7bc7ab54c
+		summarizeBy: none
+		sourceColumn: iso_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column population
+		dataType: int64
+		formatString: 0
+		lineageTag: 0303ea97-2c99-46d4-9c86-ba38fcf21ae0
+		summarizeBy: sum
+		sourceColumn: population
+
+		annotation SummarizationSetBy = Automatic
+
+	column gdp
+		dataType: int64
+		formatString: 0
+		lineageTag: 958bcb5e-e8a3-4eb0-a929-12670a25a04f
+		summarizeBy: sum
+		sourceColumn: gdp
+
+		annotation SummarizationSetBy = Automatic
+
+	column electricity_demand
+		dataType: double
+		lineageTag: da0e50fe-1e4d-41ce-9743-6f3db7c36ccb
+		summarizeBy: sum
+		sourceColumn: electricity_demand
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column electricity_demand_per_capita
+		dataType: double
+		lineageTag: 48bb26c9-a1b0-44fc-927c-fb700c2bbd71
+		summarizeBy: sum
+		sourceColumn: electricity_demand_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column electricity_generation
+		dataType: double
+		lineageTag: 79d04178-bdb3-49e4-97da-7b9ea733c35a
+		summarizeBy: sum
+		sourceColumn: electricity_generation
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column electricity_share_energy
+		dataType: double
+		lineageTag: 3535b963-a067-4e67-b309-761797b7e46e
+		summarizeBy: sum
+		sourceColumn: electricity_share_energy
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column energy_per_capita
+		dataType: double
+		lineageTag: c1388b2f-07ed-4612-a7ab-0b2eef25fad1
+		summarizeBy: sum
+		sourceColumn: energy_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column energy_per_gdp
+		dataType: double
+		lineageTag: 5d6d9ad1-ffd1-443c-b205-2e26f345b002
+		summarizeBy: sum
+		sourceColumn: energy_per_gdp
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hydro_consumption
+		dataType: double
+		lineageTag: 28a766eb-f6cd-4a1d-852e-e7da44966eaa
+		summarizeBy: sum
+		sourceColumn: hydro_consumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hydro_elec_per_capita
+		dataType: double
+		lineageTag: 77166848-b002-47f1-90fb-a57257fb5dc3
+		summarizeBy: sum
+		sourceColumn: hydro_elec_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hydro_electricity
+		dataType: double
+		formatString: 0.00
+		lineageTag: 84e5b2de-e91b-46a0-87a6-9762f1ecca8c
+		summarizeBy: sum
+		sourceColumn: hydro_electricity
+
+		annotation SummarizationSetBy = Automatic
+
+	column hydro_energy_per_capita
+		dataType: double
+		lineageTag: 5ea7b0c5-b5d7-4d9d-b1bb-f82b12cdee5d
+		summarizeBy: sum
+		sourceColumn: hydro_energy_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hydro_share_elec
+		dataType: double
+		lineageTag: 31ea47a3-841c-4201-bb65-f8087c2bbe7b
+		summarizeBy: sum
+		sourceColumn: hydro_share_elec
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hydro_share_energy
+		dataType: double
+		lineageTag: ccb27b9f-6e5b-468f-8fd5-5eadbb814f58
+		summarizeBy: sum
+		sourceColumn: hydro_share_energy
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column per_capita_electricity
+		dataType: double
+		lineageTag: ebea322e-5845-4179-a676-b9548308c0f1
+		summarizeBy: sum
+		sourceColumn: per_capita_electricity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column primary_energy_consumption
+		dataType: double
+		lineageTag: 705f0e8d-21e4-48f3-aee0-5d8a7ff507b3
+		summarizeBy: sum
+		sourceColumn: primary_energy_consumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_consumption
+		dataType: double
+		lineageTag: db07a289-ddda-45e4-ab5b-75ef5ca41216
+		summarizeBy: sum
+		sourceColumn: renewables_consumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_elec_per_capita
+		dataType: double
+		lineageTag: d22bfa0a-b453-48b9-9017-f9f6f7e85458
+		summarizeBy: sum
+		sourceColumn: renewables_elec_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_electricity
+		dataType: double
+		lineageTag: e05778bc-2ca1-481d-97d8-6a858d2c909d
+		summarizeBy: sum
+		sourceColumn: renewables_electricity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_energy_per_capita
+		dataType: double
+		lineageTag: 91b53ef7-b87f-4e89-b306-03cae62524e8
+		summarizeBy: sum
+		sourceColumn: renewables_energy_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_share_elec
+		dataType: double
+		lineageTag: 46592327-d25a-4847-9404-c13728e3381b
+		summarizeBy: sum
+		sourceColumn: renewables_share_elec
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column renewables_share_energy
+		dataType: double
+		lineageTag: 51bc381d-612d-4f02-afef-584768fecdb1
+		summarizeBy: sum
+		sourceColumn: renewables_share_energy
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column solar_consumption
+		dataType: double
+		lineageTag: 468a0632-268e-4aaa-8256-c53bdaab26cf
+		summarizeBy: sum
+		sourceColumn: solar_consumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column solar_elec_per_capita
+		dataType: double
+		lineageTag: 25ae531f-f98f-45ac-ac9c-ce0963aacdf0
+		summarizeBy: sum
+		sourceColumn: solar_elec_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column solar_electricity
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4ebbedfd-6952-4863-a377-1621dc1b2cfb
+		summarizeBy: sum
+		sourceColumn: solar_electricity
+
+		annotation SummarizationSetBy = Automatic
+
+	column solar_energy_per_capita
+		dataType: double
+		lineageTag: 980bb880-59e9-4faf-9d18-176e56de6c15
+		summarizeBy: sum
+		sourceColumn: solar_energy_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column solar_share_elec
+		dataType: double
+		lineageTag: 6d0c1eed-fd2b-45a3-9550-5463bf189bb8
+		summarizeBy: sum
+		sourceColumn: solar_share_elec
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column solar_share_energy
+		dataType: double
+		lineageTag: 08043c8f-7b20-48a6-8c82-e1ef1fc276bc
+		summarizeBy: sum
+		sourceColumn: solar_share_energy
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_consumption
+		dataType: double
+		lineageTag: 2fd093e5-4876-4df2-921c-08ae911c0cc0
+		summarizeBy: sum
+		sourceColumn: wind_consumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_elec_per_capita
+		dataType: int64
+		formatString: 0
+		lineageTag: ffefbb7f-8492-4c54-9185-bc9965946b32
+		summarizeBy: sum
+		sourceColumn: wind_elec_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+	column wind_electricity
+		dataType: double
+		formatString: 0.00
+		lineageTag: 9addb0f3-e8bf-4c5d-a50d-a236e3f228dd
+		summarizeBy: sum
+		sourceColumn: wind_electricity
+
+		annotation SummarizationSetBy = Automatic
+
+	column wind_energy_per_capita
+		dataType: double
+		lineageTag: e23d0ec9-d454-43b1-8563-2bf7c715f7e6
+		summarizeBy: sum
+		sourceColumn: wind_energy_per_capita
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_share_elec
+		dataType: double
+		lineageTag: af8b3803-8307-44d0-8904-a534f8762700
+		summarizeBy: sum
+		sourceColumn: wind_share_elec
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_share_energy
+		dataType: double
+		lineageTag: e7912f34-6828-446d-ba84-23fb8117df08
+		summarizeBy: sum
+		sourceColumn: wind_share_energy
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'isDB member'
+		dataType: string
+		lineageTag: 187f7b6b-306a-4527-8d23-06bf78637bf6
+		summarizeBy: none
+		sourceColumn: isDB member
+
+		annotation SummarizationSetBy = Automatic
+
+	partition IsDBvsGlobalEnergy = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\sasas\OneDrive\Desktop\Renewable Energy Technology Benchmarking in IsDB Member Countries vs Global Trends.xlsx"), null, true),
+				    data_Table = Source{[Item="data",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(data_Table,{{"country", type text}, {"year", Int64.Type}, {"iso_code", type text}, {"population", Int64.Type}, {"gdp", Int64.Type}, {"electricity_demand", type number}, {"electricity_demand_per_capita", type number}, {"electricity_generation", type number}, {"electricity_share_energy", type number}, {"energy_per_capita", type number}, {"energy_per_gdp", type number}, {"hydro_consumption", type number}, {"hydro_elec_per_capita", type number}, {"hydro_electricity", type number}, {"hydro_energy_per_capita", type number}, {"hydro_share_elec", type number}, {"hydro_share_energy", type number}, {"per_capita_electricity", type number}, {"primary_energy_consumption", type number}, {"renewables_consumption", type number}, {"renewables_elec_per_capita", type number}, {"renewables_electricity", type number}, {"renewables_energy_per_capita", type number}, {"renewables_share_elec", type number}, {"renewables_share_energy", type number}, {"solar_consumption", type number}, {"solar_elec_per_capita", type number}, {"solar_electricity", type number}, {"solar_energy_per_capita", type number}, {"solar_share_elec", type number}, {"solar_share_energy", type number}, {"wind_consumption", type number}, {"wind_elec_per_capita", Int64.Type}, {"wind_electricity", type number}, {"wind_energy_per_capita", type number}, {"wind_share_elec", type number}, {"wind_share_energy", type number}, {"isDB member", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"country", "Country"}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Renamed Columns", each ([Country] <> "Asia" and [Country] <> "High-income countries"))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

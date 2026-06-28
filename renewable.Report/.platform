@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "renewable"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "44540a2b-ad53-45f4-84f0-53f8f18d8fde"
+  }
+}

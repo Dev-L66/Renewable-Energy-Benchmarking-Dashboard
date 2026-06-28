@@ -1,0 +1,186 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY26SU05",
+      "reportVersionAtImport": {
+        "visual": "2.9.0",
+        "report": "3.3.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "0ed699d8e07ccb47286c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "IsDBvsGlobalEnergy"
+              }
+            },
+            "Property": "isDB member"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "requireSingleSelect": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publicCustomVisuals": [
+    "imageDB603108E3FF4EBFB8047F5653368E8C",
+    "timeLineE4A86F3675B84D178C45F7E034E25D6A"
+  ],
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY26SU05",
+          "path": "BaseThemes/CY26SU05.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "_Pngtree_earth_energy_wind_ene29353871604358606.png",
+          "path": "_Pngtree_earth_energy_wind_ene29353871604358606.png",
+          "type": "Image"
+        },
+        {
+          "name": "2df6b2f1-2381-4112-83fb-51d6274895947139830228.png",
+          "path": "2df6b2f1-2381-4112-83fb-51d6274895947139830228.png",
+          "type": "Image"
+        },
+        {
+          "name": "9p7mrgco5qekjrjumq1s5m5oah328314016550164.png",
+          "path": "9p7mrgco5qekjrjumq1s5m5oah328314016550164.png",
+          "type": "Image"
+        },
+        {
+          "name": "Adobe_Express_-_file07059669420279369.png",
+          "path": "Adobe_Express_-_file07059669420279369.png",
+          "type": "Image"
+        },
+        {
+          "name": "clipart285138707107532833461472.png",
+          "path": "clipart285138707107532833461472.png",
+          "type": "Image"
+        },
+        {
+          "name": "clipart34253417253265533396641.png",
+          "path": "clipart34253417253265533396641.png",
+          "type": "Image"
+        },
+        {
+          "name": "clipart5036538365359886093764.png",
+          "path": "clipart5036538365359886093764.png",
+          "type": "Image"
+        },
+        {
+          "name": "compare-icon-115425167545290214155.png",
+          "path": "compare-icon-115425167545290214155.png",
+          "type": "Image"
+        },
+        {
+          "name": "filter-32-162644546703767956.png",
+          "path": "filter-32-162644546703767956.png",
+          "type": "Image"
+        },
+        {
+          "name": "globe9226574395422865.webp",
+          "path": "globe9226574395422865.webp",
+          "type": "Image"
+        },
+        {
+          "name": "Islamic_Development_Bank_logo.07405384278851013.png",
+          "path": "Islamic_Development_Bank_logo.07405384278851013.png",
+          "type": "Image"
+        },
+        {
+          "name": "market-share_1299255211381002666121254.png",
+          "path": "market-share_1299255211381002666121254.png",
+          "type": "Image"
+        },
+        {
+          "name": "pngegg_(4)5277818059925364.png",
+          "path": "pngegg_(4)5277818059925364.png",
+          "type": "Image"
+        },
+        {
+          "name": "pngwing.com8875952769807163.png",
+          "path": "pngwing.com8875952769807163.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true,
+    "customMemoryLimit": "1048576",
+    "customTimeoutLimit": "225"
+  }
+}

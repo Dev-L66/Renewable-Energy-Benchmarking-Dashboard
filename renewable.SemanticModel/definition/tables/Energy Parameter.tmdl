@@ -1,0 +1,54 @@
+table 'Energy Parameter'
+	lineageTag: 6c24b080-6257-412b-9683-697b85ca571c
+
+	measure Solar = SUM(IsDBvsGlobalEnergy[solar_electricity])
+		lineageTag: 5177de66-e5ea-44e5-bb31-db625593845d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Energy Parameter'
+		lineageTag: e0c8fbfb-31cb-4256-a9d5-6f633f06cd1b
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Energy Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Energy Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Energy Parameter Fields'
+		isHidden
+		lineageTag: 0063e2c1-cbf6-4083-8297-3864da89a05e
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Energy Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Energy Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 4750d0a3-c408-4299-a0a2-201721923bb4
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Energy Parameter' = calculated
+		mode: import
+		source =
+				{
+				    ("Solar Electricity", NAMEOF([Total Solar Electricity]), 0),
+				    ("Hydro Electricity", NAMEOF([Total Hydro Electricity]), 1),
+				    ("Wind Electricity", NAMEOF([Total Wind Electricity]), 2)
+				}
+
+	annotation PBI_Id = b42bf64b618c44b2b0bb272ffa5ac0ab
+
